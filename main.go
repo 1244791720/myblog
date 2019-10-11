@@ -5,8 +5,8 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
-	"goblog/myblog/models"
-	_ "goblog/myblog/routers"
+	"myblog/models"
+	_ "myblog/routers"
 	"log"
 )
 

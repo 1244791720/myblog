@@ -1,11 +1,13 @@
 package api
 
 import (
+	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
-	"goblog/myblog/models"
+	"myblog/dao"
+	"myblog/models"
 	"strconv"
 )
 
@@ -14,6 +16,11 @@ func init() {
 
 type ArticleController struct {
 	beego.Controller
+}
+
+type Param struct {
+	Id string `json:"id"`
+	Content string `json:"content"`
 }
 
 // 获取单个文章
@@ -45,4 +52,25 @@ func (this *ArticleController) Get() {
 	// 返回结果
 	this.Data["json"] = result.Success(article)
 	this.ServeJSON()
+}
+
+// 修改单个文章内容
+func (this *ArticleController) Post() {
+	data := modifyArticle(this)
+	this.Data["json"] = data
+	this.ServeJSON()
+}
+
+func modifyArticle(this *ArticleController) *models.Result{
+	var param Param
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &param)
+	if  err != nil {
+		logs.Error("保存文章失败", err.Error())
+	}
+	logs.Info(param)
+	err = dao.ModifyArticle(param)
+	if err != nil {
+		return new(models.Result).Error()
+	}
+	return new(models.Result).Success(param)
 }

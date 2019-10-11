@@ -14,13 +14,14 @@
     <header>
         <h1>Simple example</h1>
     </header>
-    <div><button class="btn btn-default">保存</button></div>
+    <div id="saveButton"><button class="btn btn-default">保存</button></div>
     <div id="test-editormd">
         <textarea style="display:none;"></textarea>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="../js/common.js"></script>
 <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
 <script src="../js/editormd.js"></script>
 <script type="text/javascript">
@@ -42,6 +43,43 @@
         var content = $('.editormd-markdown-textarea').val()
         console.log(content)
     });
+
+    // 点击保存，存入数据库
+    $('#saveButton').click(function () {
+        console.log("保存消息")
+        let id = getQueryString("id")
+        // ajax 存入文章内容
+        // var content = $('.editormd-markdown-textarea').val()
+        // $.post(modifyArticleContent,
+        //     {
+        //         id:1,
+        //         content:content
+        //     },
+        //     function(data,status){
+        //         console.log("data:", data)
+        //         console.log("status:", status)
+        //     });
+        let content = $('.editormd-markdown-textarea').val()
+        let data = {
+                    "id":"1",
+                    "content":content
+        }
+        $.ajax({
+            url:modifyArticleContent,
+            type:"post",
+            dataType:"json",
+            data:JSON.stringify(data),
+            headers: {'Content-Type': 'application/json'},
+            success: function (data, status) {
+                console.log("data:", data)
+                console.log("status:", status)
+                if (status === "success") {
+                    alert("保存成功")
+                }
+            }
+        })
+    })
+
 
 </script>
 </body>

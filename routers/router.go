@@ -3,7 +3,7 @@ package routers
 import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
-	"goblog/myblog/controllers/api"
+	"myblog/controllers/api"
 )
 
 func init() {
