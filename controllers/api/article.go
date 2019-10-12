@@ -68,7 +68,7 @@ func modifyArticle(this *ArticleController) *models.Result{
 		logs.Error("保存文章失败", err.Error())
 	}
 	logs.Info(param)
-	err = dao.ModifyArticle(param)
+	err = dao.ModifyArticle(param.Id, param.Content)
 	if err != nil {
 		return new(models.Result).Error()
 	}
