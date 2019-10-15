@@ -19,9 +19,11 @@ func ModifyArticle(id,content string) error {
 	}
 	article.Id = intId
 	article.ArticleContent = content
-	if num, err := o.Update(&article); err == nil {
+	if num, err := o.Update(article, "ArticleContent"); err == nil {
 		fmt.Println(num)
 		return err
 	}
 	return nil
 }
+
+

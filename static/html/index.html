@@ -69,7 +69,7 @@
 </nav>
 <!-- body -->
 <div id="app" class="page-body row">
-    <div class="page-left col-md-7">
+    <div class="page-left col-md-8">
         <div v-cloak class="article" v-for="article in articles">
             <span class="label label-primary label-font" v-cloak>{{article.ArticleType}}</span>
             <a :href="'article.html?id='+article.Id"><span class="article-title" v-cloak>{{article.ArticleTitle}}</span></a>
@@ -79,7 +79,7 @@
                 </div>
                 <div class="col-md-7" style="margin: 10px 0px;">
                     <div v-cloak class="article-content-center" style="min-height: 40px;">
-                        {{article.ArticleSimpleContent}}
+                        <a :href="'article.html?id='+article.Id">{{article.ArticleSimpleContent}}</a>
                     </div>
                     <div class="article-content-booton">
                         <ul>
@@ -112,7 +112,7 @@
             </ul>
         </nav>
     </div>
-    <div class="page-right  col-md-4 ">
+    <div class="page-right  col-md-3 ">
         <div class="panel panel-default">
             <div class="panel-heading">推荐文章</div>
             <div class="panel-body">

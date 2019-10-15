@@ -22,4 +22,6 @@ func init() {
 	beego.Router("/countArticles", &api.ArticlesCountController{})
 	beego.Router("/download", &api.FileDownLoadController{})
 	beego.Router("/upload", &api.FileUpLoadController{})
+	// 文章编辑器保存文章
+	beego.Router("/submitArticle", &api.SubmitArticleController{})
 }

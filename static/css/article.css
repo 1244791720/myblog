@@ -17,5 +17,8 @@ img {
 }
 
 .article-right {
-    margin-left: 5%;
+}
+#md-content {
+    text-align: left !important;
+
 }

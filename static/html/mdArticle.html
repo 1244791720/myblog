@@ -2,73 +2,147 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <meta charset="utf-8" />
-    <title>Simple example - Editor.md examples</title>
+    <meta charset="utf-8"/>
+    <title>博客编辑器</title>
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/editormd.css" />
-    <link rel="shortcut icon" href="https://pandao.github.io/editor.md/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../css/editormd.css"/>
+    <link rel="stylesheet" href="../css/mdArticle.css"/>
+    <link rel="shortcut icon" href="https://pandao.github.io/editor.md/favicon.ico" type="image/x-icon"/>
 </head>
 <body>
 <div id="layout">
     <header>
-        <h1>Simple example</h1>
+        <h1 class="title">博客编辑器</h1>
     </header>
-    <div id="saveButton"><button class="btn btn-default">保存</button></div>
+    <div id="saveButton">
+        <button class="btn btn-default saveButton">保存</button>
+    </div>
     <div id="test-editormd">
         <textarea style="display:none;"></textarea>
     </div>
+    <!-- Modal 成功-->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">编辑文章</h4>
+                </div>
+                <form class="articleForm" action="submitArticle" method="post" enctype="multipart/form-data" target="nm_iframe">
+                    <div class="modal-body">
+
+                        <div class="form-group">
+                            <label for="article_title">文章标题</label>
+                            <input name="article_title" class="form-control" id="article_title"
+                                   placeholder="标题">
+                        </div>
+                        <div class="form-group">
+                            <label for="article_simple_content">简短描述</label>
+                            <input name="article_simple_content" class="form-control" id="article_simple_content"
+                                   placeholder="描述">
+                        </div>
+                        <div class="form-group">
+                            <label for="article_author">作者</label>
+                            <input name="article_author" class="form-control" id="article_author" placeholder="作者">
+                        </div>
+                        <div class="form-group">
+                            <label for="type_id">文章类型</label>
+                            <input name="type_id" class="form-control" id="type_id" placeholder="类型">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputFile">封面</label>
+                            <input type="file" name="coverImage" id="exampleInputFile">
+                            <p class="help-block">添加文章的封面</p>
+                        </div>
+                        <input type="hidden" id="hiden_content" name="article_content" value="000s" />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="input" class="btn btn-default" data-dismiss="modal" onclick="hideForm()">保存</button>
+                        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                    </div>
+                </form>
+                <iframe  id="nm_iframe" name="nm_iframe" style="display:none;"></iframe >
+            </div>
+        </div>
+    </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
-<script src="../js/common.js"></script>
 <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+<!-- Vue -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="../js/common.js"></script>
 <script src="../js/editormd.js"></script>
 <script type="text/javascript">
+    // 编辑器显示逻辑
     var testEditor;
-
-    $(function() {
+    $(function () {
         testEditor = editormd("test-editormd", {
-            width   : "90%",
-            height  : 640,
-            syncScrolling : "single",
-            path    : "../lib/",
-            imageUpload : true,
-            imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
-            imageUploadURL : "http://localhost:8080/upload",
-            crossDomainUpload    : false,          // Enable/disable Cross-domain upload
+            width: "90%",
+            height: 640,
+            syncScrolling: "single",
+            path: "../lib/",
+            imageUpload: true,
+            imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+            imageUploadURL: "http://localhost:8080/upload",
+            crossDomainUpload: false,          // Enable/disable Cross-domain upload
         });
     });
-    $('#test-editormd').bind('input propertychange', function() {
+    $('#test-editormd').bind('input propertychange', function () {
         var content = $('.editormd-markdown-textarea').val()
         console.log(content)
+        // 给表单添加上content内容
+        $('#hiden_content').val(content)
+        console.log("$('#hiden_content').val", $('#hiden_content').val())
     });
 
-    // 点击保存，存入数据库
+    // 点击按钮弹出模态框
     $('#saveButton').click(function () {
-        console.log("保存消息")
-        let id = getQueryString("id")
-        // ajax 存入文章内容
-        let content = $('.editormd-markdown-textarea').val()
-        let data = {
-                    "id":"1",
-                    "content":content
-        }
-        $.ajax({
-            url:modifyArticleContent,
-            type:"post",
-            dataType:"json",
-            data:JSON.stringify(data),
-            headers: {'Content-Type': 'application/json'},
-            success: function (data, status) {
-                console.log("data:", data)
-                console.log("status:", status)
-                if (status === "success") {
-                    alert("保存成功")
-                }
-            }
+        $('#myModal').modal({
+            show: true
         })
     })
+
+    // 表单隐藏
+    function hideForm() {
+        $('#myModal').modal('hide')
+        $('.articleForm').submit()
+        alert("上传结束")
+        setInterval(function () {
+            window.location.href = "admin.html"
+        }, 1)
+        // window.location.href = "admin.html"
+    }
+
+    // 点击保存，存入数据库
+    // $('#saveButton').click(function () {
+    //     console.log("保存消息")
+    //     let id = getQueryString("id")
+    //     // ajax 存入文章内容
+    //     let content = $('.editormd-markdown-textarea').val()
+    //     let data = {
+    //                 "id":"6",
+    //                 "content":content
+    //     }
+    //     $.ajax({
+    //         url:modifyArticleContent,
+    //         type:"post",
+    //         dataType:"json",
+    //         data:JSON.stringify(data),
+    //         headers: {'Content-Type': 'application/json'},
+    //         success: function (data, status) {
+    //             console.log("data:", data)
+    //             console.log("status:", status)
+    //             if (status === "success") {
+    //                 alert("保存成功")
+    //             }
+    //         }
+    //     })
+    // })
 
 
 </script>

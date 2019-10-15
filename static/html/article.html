@@ -12,7 +12,16 @@
 <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
 <!-- Vue -->
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="../js/vue.min.js"></script>
+<script src="../lib/marked.min.js"></script>
+<script src="../lib/prettify.min.js"></script>
+<script src="../lib/raphael.min.js"></script>
+<script src="../lib/underscore.min.js"></script>
+<script src="../lib/sequence-diagram.min.js"></script>
+<script src="../lib/flowchart.min.js"></script>
+<script src="../lib/jquery.flowchart.min.js"></script>
+<script src="../js/editormd.js"></script>
 <script src="../js/common.js"></script>
 <body>
 <!-- 导航 -->
@@ -65,16 +74,20 @@
 </nav>
 <div id="app" class="row">
     <div class="col-md-2 article-left"></div>
-    <div class="article col-md-6">
+    <div class="article col-md-7">
         <div class="article-title">
             <h1>{{article.ArticleTitle}}</h1>
-            <span>2018.11.25 18:21:07</span>
+            <span>{{article.CreateTime}}</span>
             <span>字数 585</span>
             <span>阅读 1061</span>
         </div>
-        <div class="article-html" v-html="article.ArticleContent"></div>
+        <div class="article-html">
+            <div id="md-content" style="width: 80%;text-align: center">
+                <textarea style="display:none;" placeholder="markdown语言">{{article.ArticleContent}}</textarea>
+            </div>
+        </div>
     </div>
-    <div class="article-right col-md-3 black"></div>
+    <div class="article-right col-md-2 black"></div>
 </div>
 </body>
 <script type="text/javascript">
@@ -83,33 +96,55 @@
         data: {
             articleTitle: "JVM内存划分",
             articleHtml: "",
-            article:{}
+            article:{},
         },
-        methods: {}
+        methods: {
+            showArticleHtml: function(app) {
+                let id = getQueryString("id")
+                var param = `/${id}`
+                // ajax 获取单个文章数据
+                $.ajax({
+                    type : "get",
+                    url : getOneArticle + param,
+                    async : false,
+                    success : function(data, status){
+                        console.log("data", data)
+                        console.log("status", status)
+                        if (status == "success") {
+                            let result = data
+                            let objectData = result["Data"]
+                            console.log("objectData", objectData)
+                            let code = result["Code"]
+                            if (code == 200) {
+                                app.article = objectData
+                            }
+                            console.log("article", app.article)
+                        }
+                    }
+                });
+            },
+            // init editor
+            initEditor: function () {
+                var testEditor;
+                console.log("init editor")
+                testEditor = editormd.markdownToHTML("md-content", {//注意：这里是上面DIV的id
+                    htmlDecode: "style,script,iframe",
+                    emoji: false,
+                    taskList: false,
+                    tocm: false,
+                    tex: false, // 默认不解析
+                    flowChart: true, // 默认不解析
+                    sequenceDiagram: true, // 默认不解析
+                    codeFold: true
+                });
+            },
+        },
+        created: function () {
+            this.showArticleHtml(this)
+
+        }
     })
-
-
-    // show article html
-    let showArticleHtml = function () {
-        let id = getQueryString("id")
-        var param = `/${id}`
-        // ajax 获取单个文章数据
-        $.get(getOneArticle + param, function (data, status) {
-            console.log("data", data)
-            console.log("status", status)
-            if (status == "success") {
-                // json 转换为对象
-                // let result = JSON.parse(data)
-                let result = data
-                let objectData = result["Data"]
-                let code = result["Code"]
-                if (code == 200) {
-                    app.article = objectData
-                }
-            }
-        })
-        $(".article-html").html(``)
-    }
-    showArticleHtml()
+    app.initEditor()
 </script>
+
 </html>

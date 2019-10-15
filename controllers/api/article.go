@@ -49,8 +49,13 @@ func (this *ArticleController) Get() {
 		this.ServeJSON()
 	}
 
+	// to vo
+	vo := new(models.ArticleVO)
+	vo.CreateTime = article.CreateTime.Format("2006-01-02 15:04:05")
+	vo.ArticleContent = article.ArticleContent
+	vo.ArticleTitle = article.ArticleTitle
 	// 返回结果
-	this.Data["json"] = result.Success(article)
+	this.Data["json"] = result.Success(vo)
 	this.ServeJSON()
 }
 

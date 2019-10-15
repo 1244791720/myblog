@@ -80,5 +80,5 @@ func uploadDao(c *FileUpLoadController) *UploadResult {
 		logs.Error("saveToFile：", err)
 		return new(UploadResult).uploadFailed("文件上传失败")
 	}
-	return new(UploadResult).uploadSucceed(c.Ctx.Request.RemoteAddr + fpath)
+	return new(UploadResult).uploadSucceed(fpath)
 }
