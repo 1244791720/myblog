@@ -1,0 +1,19 @@
+.left-nav {
+    /*width: 20%;*/
+    /*border: #6a9fb5 1px solid;*/
+    padding: 1% 0;
+    margin-left: 1%;
+}
+.container {
+    width: 100%;
+}
+.my-table {
+    margin-top: 1%;
+}
+.hide {
+    display:none;
+}
+
+.container {
+    /*min-height: 500px;*/
+}
