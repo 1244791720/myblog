@@ -19,7 +19,8 @@ const countArticles = host + "countArticles"
 const modifyArticleContent = host + "article"
 // 修改文章内容表单
 const modifyArticleForm = host + "articleForm"
-
+// 删除一篇文章
+const deleteArticleApi = host + "deleteOneArticle"
 // 从地址栏取参数
 // getQueryString("参数名1")
 function getQueryString(name){

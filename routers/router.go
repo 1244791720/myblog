@@ -26,5 +26,8 @@ func init() {
 	beego.Router("/submitArticle", &api.SubmitArticleController{})
 	// 表单修改文章内容
 	beego.Router("/articleForm", &api.ArticleFormController{})
+	// 删除一篇文章
+	beego.Router("deleteOneArticle", &api.DeleteOneArticleController{})
+
 
 }

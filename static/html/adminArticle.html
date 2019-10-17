@@ -24,7 +24,7 @@
         <td>dsadsa</td>
         <td>dsadsa</td>
         <td>dsadsa</td>
-        <td><span class="glyphicon glyphicon-trash" style="cursor:hand;"></span></td>
+        <td><span article-id="1" class="glyphicon glyphicon-trash" style="cursor:hand;" onclick="deleteArticle(this)"></span></td>
         <td><span article-id="1" data-toggle="modal" data-target="#myModal" onclick="echoFormData(this)"
                   class="glyphicon glyphicon-pencil" style="cursor:hand"></span></td>
     </tr>
@@ -181,5 +181,20 @@
             }
         })
         $('#myModal').modal('hide')
+    }
+    let deleteArticle = (that) => {
+        let id = $(that).attr('article-id')
+        let param = `/?${id}`
+        $.get(deleteArticleApi+param, function (data, status) {
+            console.log('data', data)
+            console.log('status', status)
+            if (status === 'success') {
+                let result = data
+                let code = result["Code"]
+                if (code === 200) {
+                    alert('删除成功')
+                }
+            }
+        })
     }
 </script>
