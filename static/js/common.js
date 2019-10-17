@@ -15,8 +15,10 @@ const getPageArticles = host + "pageArticles"
 const getOneArticle = host + "article"
 // 获取文章总数
 const countArticles = host + "countArticles"
-// 修改单个文章内容
+// 修改单个文章内容 参数放在请求体里
 const modifyArticleContent = host + "article"
+// 修改文章内容表单
+const modifyArticleForm = host + "articleForm"
 
 // 从地址栏取参数
 // getQueryString("参数名1")

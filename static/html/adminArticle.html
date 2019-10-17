@@ -5,6 +5,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
 <!-- Vue -->
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="../js/common.js"></script>
 <table class="my-table table table-hover  table-bordered table-striped">
     <h1>文章管理</h1>
     <thead>
@@ -24,7 +25,8 @@
         <td>dsadsa</td>
         <td>dsadsa</td>
         <td><span class="glyphicon glyphicon-trash" style="cursor:hand;"></span></td>
-        <td><span article-id="1"  data-toggle="modal" data-target="#myModal" onclick="echoFormData()" class="glyphicon glyphicon-pencil" style="cursor:hand"></span></td>
+        <td><span article-id="1" data-toggle="modal" data-target="#myModal" onclick="echoFormData(this)"
+                  class="glyphicon glyphicon-pencil" style="cursor:hand"></span></td>
     </tr>
     <tr>
         <td>dsadsa</td>
@@ -32,7 +34,8 @@
         <td>dsadsa</td>
         <td>dsadsa</td>
         <td><span class="glyphicon glyphicon-trash" style="cursor:hand;"></span></td>
-        <td><span article-id="1"  data-toggle="modal" data-target="#myModal" class="glyphicon glyphicon-pencil" style="cursor:hand"></span></td>
+        <td><span article-id="1" data-toggle="modal" data-target="#myModal" class="glyphicon glyphicon-pencil"
+                  style="cursor:hand"></span></td>
     </tr>
     </tbody>
 </table>
@@ -43,11 +46,13 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
                 <h4 class="modal-title" id="myModalLabel">修改文章属性</h4>
             </div>
-            <div class="modal-body">
-                <form class="articleForm" action="submitArticle" method="post" enctype="multipart/form-data" target="nm_iframe">
+            <form class="articleForm" action="submitArticle" method="post" enctype="multipart/form-data"
+                  target="nm_iframe">
+                <div class="modal-body">
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="article_title">文章标题</label>
@@ -80,36 +85,101 @@
                             <p class="help-block">添加文章的封面</p>
                         </div>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" onclick="saveArticle()">保存</button>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" id="saveButton" class="btn btn-primary" onclick="modifyArticle()">保存</button>
+                </div>
+            </form>
+            <iframe  id="nm_iframe" name="nm_iframe" style="display:none;"></iframe >
         </div>
     </div>
 </div>
 
 <script type="application/javascript">
-    // todo 表单回显原始数据
-    let echoFormData = () => {
+    //  表单回显原始数据
+    let echoFormData = (that) => {
         // 根据id获取文章原数据
+        let article = {}
+        // 获取articleId 从元素上
+        // ajax 获取单个文章数据
+        let id = $(that).attr('article-id')
+        var param = `/${id}`
+        $.ajax({
+            type: "get",
+            url: getOneArticle + param,
+            async: false,
+            success: function (data, status) {
+                console.log("data", data)
+                console.log("status", status)
+                if (status == "success") {
+                    let result = data
+                    let objectData = result["Data"]
+                    console.log("objectData", objectData)
+                    let code = result["Code"]
+                    if (code == 200) {
+                        article = objectData
+                    }
+                }
+            }
+        });
+
+        // 给saveButton加上id
+        $('#saveButton').attr('article-id', id)
         const mockArticle = {
             "article_title": "标题",
             "article_simple_content": "描述文章",
             "article_author": "原创",
             "type_id": 2,
-            "coverImage": "img/git.png"
         }
+
         $('#article_title').attr('value', mockArticle.article_title)
         $('#article_simple_content').attr('value', mockArticle.article_simple_content)
         $('#article_author').attr('value', mockArticle.article_author)
         $('#type_id').val(mockArticle.type_id)
     }
 
-
-    let saveArticle = () => {
+    let modifyArticle = () => {
         // ajax 调用保存文章
+        let id = $('#saveButton').attr('article-id')
+        let requestData = {
+            "id": id,
+            "article_simple_content": $('#article_simple_content').attr('value'),
+            "article_title": $('#article_title').attr('value'),
+            "type_id": $('#type_id').val(),
+            "article_author": $('#article_author').attr('value'),
+        }
+
+        // form 构造
+        //获取上传文件
+        let file = $("#exampleInputFile").get(0).files[0];
+        let formData = new FormData()
+        formData.append("coverImage", file)
+        formData.append("ArticleSimpleContent", requestData.ArticleSimpleContent)
+        formData.append("ArticleTitle", requestData.ArticleTitle)
+        formData.append("TypeId", requestData.TypeId)
+        formData.append("ArticleAuthor", requestData.ArticleAuthor)
+        console.log('requestData', requestData)
+        console.log('saveArticleId', id)
+        $.ajax({
+            type: "post",
+            url: modifyArticleForm,
+            async: true,
+            data: formData,
+            contentType: false,//这里必须为false
+            processData: false,//这里必须为false
+            success: function (data, status) {
+                console.log("data", data)
+                console.log("status", status)
+                if (status == "success") {
+                    let result = data
+                    let code = result["Code"]
+                    if (code == 200) {
+                        alert('修改文章成功')
+                    }
+                }
+            }
+        })
         $('#myModal').modal('hide')
     }
 </script>
