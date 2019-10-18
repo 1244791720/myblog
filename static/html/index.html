@@ -102,8 +102,8 @@
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-                <li><a href="#">1</a></li>
-                <li v-for="pageNum in page"><a href="#">{{pageNum}}</a></li>
+                <li onclick="toPage(this)"><a href="#">1</a></li>
+                <li onclick="toPage(this)" v-for="pageNum in page" :pageNum="pageNum"><a href="#">{{pageNum}}</a></li>
                 <li>
                     <a href="#" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
@@ -224,13 +224,43 @@
                         app.showPage = true
                         // 每5个分一页
                         let arr=new Array();
-                        while (parseInt(count / 5) > 0) {
-                            let onepage = count % 5 + 1
-                            arr.unshift(onepage)
-                            count = parseInt(count / 5)
+                        let totalPage = parseInt(count / 5)
+                        let onePage = totalPage
+                        if (count % 5 > 0) {
+                            onePage++
+                        }
+                        while (onePage > 1)  {
+                            arr.unshift(onePage)
+                            onePage --
                         }
                         app.page = arr
                     }
+                }
+            }
+        })
+
+    }
+    var toPage = (that) => {
+        let pageNum = that.getAttribute('pageNum')
+        // let pageNum = $(that).atrr('pageNum')
+        // ajax 请求
+        //发送get请求
+        let limit = 5
+        let offset = (pageNum-1) * limit
+        let param = `?limit=${limit}&offset=${offset}`
+        console.log("param", param)
+        $.get(getPageArticles + param, function (data, status) {
+            console.log("data", data)
+            console.log("status", status)
+            if (status == "success") {
+                // json 转换为对象
+                // let result = JSON.parse(data)
+                let result = data
+                let objectData = result["Data"]
+
+                let code = result["Code"]
+                if (code == 200) {
+                    app.articles = objectData
                 }
             }
         })

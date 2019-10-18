@@ -15,8 +15,10 @@
     <header>
         <h1 class="title">博客编辑器</h1>
     </header>
-    <div id="saveButton">
-        <button class="btn btn-default saveButton">保存</button>
+    <div id="">
+        <!--地址栏带id时显示修改的按钮，不带id显示新建的按钮-->
+        <button id="insertButton" style="display: none;" class="btn btn-default saveButton">新建文章</button>
+        <button id="updateButton" style="display: none;" class="btn btn-default updateButton">修改文章内容</button>
     </div>
     <div id="test-editormd">
         <textarea style="display:none;"></textarea>
@@ -30,7 +32,7 @@
                                 aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="myModalLabel">编辑文章</h4>
                 </div>
-                <form class="articleForm" action="submitArticle" method="post" enctype="multipart/form-data" target="nm_iframe">
+                <form class="articleForm" action="../submitArticle" method="post" enctype="multipart/form-data" target="nm_iframe">
                     <div class="modal-body">
 
                         <div class="form-group">
@@ -65,9 +67,10 @@
                             <p class="help-block">添加文章的封面</p>
                         </div>
                         <input type="hidden" id="hiden_content" name="article_content" value="000s" />
+                        <input type="hidden" id="article_id" name="article_content" value="-1" />
                     </div>
                     <div class="modal-footer">
-                        <button type="input" class="btn btn-default" data-dismiss="modal" onclick="hideForm()">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="hideForm()">保存</button>
                         <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
                     </div>
                 </form>
@@ -102,14 +105,12 @@
     });
     $('#test-editormd').bind('input propertychange', function () {
         var content = $('.editormd-markdown-textarea').val()
-        console.log(content)
         // 给表单添加上content内容
         $('#hiden_content').val(content)
-        console.log("$('#hiden_content').val", $('#hiden_content').val())
     });
 
     // 点击按钮弹出模态框
-    $('#saveButton').click(function () {
+    $('#insertButton').click(function () {
         $('#myModal').modal({
             show: true
         })
@@ -117,42 +118,51 @@
 
     // 表单隐藏
     function hideForm() {
+        console.log('隐藏表单')
         $('#myModal').modal('hide')
         $('.articleForm').submit()
         alert("上传结束")
         setInterval(function () {
-            window.location.href = "admin.html"
+            window.location.href = "../admin.html"
         }, 1)
-        // window.location.href = "admin.html"
     }
 
     // 点击保存，存入数据库
-    // $('#saveButton').click(function () {
-    //     console.log("保存消息")
-    //     let id = getQueryString("id")
-    //     // ajax 存入文章内容
-    //     let content = $('.editormd-markdown-textarea').val()
-    //     let data = {
-    //                 "id":"6",
-    //                 "content":content
-    //     }
-    //     $.ajax({
-    //         url:modifyArticleContent,
-    //         type:"post",
-    //         dataType:"json",
-    //         data:JSON.stringify(data),
-    //         headers: {'Content-Type': 'application/json'},
-    //         success: function (data, status) {
-    //             console.log("data:", data)
-    //             console.log("status:", status)
-    //             if (status === "success") {
-    //                 alert("保存成功")
-    //             }
-    //         }
-    //     })
-    // })
+    $('#updateButton').click(function () {
+        console.log("保存消息")
+        let id = getQueryString("id")
+        // ajax 存入文章内容
+        let content = $('.editormd-markdown-textarea').val()
+        let data = {
+                    "id": id,
+                    "content":content
+        }
+        $.ajax({
+            url:modifyArticleContent,
+            type:"post",
+            dataType:"json",
+            data:JSON.stringify(data),
+            headers: {'Content-Type': 'application/json'},
+            success: function (data, status) {
+                console.log("data:", data)
+                console.log("status:", status)
+                if (status === "success") {
+                    alert("保存成功")
+                }
+            }
+        })
+    })
 
-
+    // 显示新建还是修改按钮逻辑
+    let showUpdateOrInsert = () => {
+        let id = getQueryString("id")
+        if (id == null) {
+            $('#insertButton').show()
+        } else {
+            $('#updateButton').show()
+        }
+    }
+    showUpdateOrInsert()
 </script>
 </body>
 </html>

@@ -3,6 +3,12 @@
     margin-right: 11%;
     margin-top: -2%;
 }
+#updateButton {
+    float: right;
+    margin-right: 11%;
+    margin-top: -2%;
+}
+
 .title {
     margin-left: 5%;
 }
