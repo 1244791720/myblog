@@ -6,7 +6,8 @@
 <!-- Vue -->
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="../js/common.js"></script>
-<table id="app" class="my-table table table-hover  table-bordered table-striped">
+<div id="app">
+<table  class="my-table table table-hover  table-bordered table-striped" >
     <h1>文章管理</h1>
     <thead>
     <tr>
@@ -29,7 +30,7 @@
                   onclick="deleteArticle(this)"></span></td>
         <td><span :article-id="article.Id" data-toggle="modal" data-target="#myModal" onclick="echoFormData(this)"
                   class="glyphicon glyphicon-pencil" style="cursor:hand"></span></td>
-        <td><span :article-id="article.Id" class="glyphicon glyphicon-pencil" onclick="updateCover(this)" style="cursor:hand;" data-toggle="modal"
+        <td><span :article-id="article.Id" class="glyphicon glyphicon-scissors" onclick="updateCover(this)" style="cursor:hand;" data-toggle="modal"
                   data-target="#coverModal"></span></td>
     </tr>
     </tbody>
@@ -119,11 +120,32 @@
     </div>
 </div>
 
+<!-- 分页 -->
+<nav v-if="showPage" aria-label="Page navigation">
+    <ul class="pagination pagination-md">
+        <li>
+            <a href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <li onclick="toPage(this)"><a href="#">1</a></li>
+        <li onclick="toPage(this)" v-for="pageNum in page" :pageNum="pageNum"><a href="#">{{pageNum}}</a></li>
+        <li>
+            <a href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+</div>
 <script type="application/javascript">
     let app = new Vue({
         el: '#app',
         data: {
             articles: [],
+            showPage: false,
+            // 分页页码数组
+            page: [],
         },
         methods: {},
     })
@@ -263,4 +285,68 @@
     function hideCoverModal() {
         $('#coverModal').modal('hide')
     }
+    // 显示分页判断
+    function showPage(app) {
+        // ajax获取数据量
+        $.get(countArticles, function (data, status) {
+            console.log("data", data)
+            console.log("status", status)
+            if (status == "success") {
+                // json 转换为对象
+                // let result = JSON.parse(data)
+                let result = data
+                let count = result["Data"]
+
+                let code = result["Code"]
+                if (code == 200) {
+                    // 总数大于5显示分页栏
+                    if (count > 5) {
+                        app.showPage = true
+                        // 每5个分一页
+                        let arr=new Array();
+                        let totalPage = parseInt(count / 5)
+                        let onePage = totalPage
+                        if (count % 5 > 0) {
+                            onePage++
+                        }
+                        while (onePage > 1)  {
+                            arr.unshift(onePage)
+                            onePage --
+                        }
+                        app.page = arr
+                    }
+                }
+            }
+        })
+
+    }
+    var toPage = (that) => {
+        let pageNum = that.getAttribute('pageNum')
+        // let pageNum = $(that).atrr('pageNum')
+        // ajax 请求
+        //发送get请求
+        let limit = 5
+        let offset = (pageNum-1) * limit
+        let param = `?limit=${limit}&offset=${offset}`
+        console.log("param", param)
+        $.get(getPageArticles + param, function (data, status) {
+            console.log("data", data)
+            console.log("status", status)
+            if (status == "success") {
+                // json 转换为对象
+                // let result = JSON.parse(data)
+                let result = data
+                let objectData = result["Data"]
+
+                let code = result["Code"]
+                if (code == 200) {
+                    app.articles = objectData
+                }
+            }
+        })
+
+    }
+    initArticle(app)
+    // 分页相关逻辑
+    showPage(app)
 </script>
