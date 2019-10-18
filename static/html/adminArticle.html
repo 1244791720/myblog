@@ -16,6 +16,7 @@
         <th>作者</th>
         <th>删除</th>
         <th>修改</th>
+        <th>修改封面</th>
     </tr>
     </thead>
     <tbody>
@@ -24,9 +25,12 @@
         <td>{{article.ArticleTitle}}</td>
         <td>{{article.ArticleType}}</td>
         <td>{{article.ArticleAuthor}}</td>
-        <td><span :article-id="article.Id" class="glyphicon glyphicon-trash" style="cursor:hand;" onclick="deleteArticle(this)"></span></td>
+        <td><span :article-id="article.Id" class="glyphicon glyphicon-trash" style="cursor:hand;"
+                  onclick="deleteArticle(this)"></span></td>
         <td><span :article-id="article.Id" data-toggle="modal" data-target="#myModal" onclick="echoFormData(this)"
                   class="glyphicon glyphicon-pencil" style="cursor:hand"></span></td>
+        <td><span :article-id="article.Id" class="glyphicon glyphicon-pencil" onclick="updateCover(this)" style="cursor:hand;" data-toggle="modal"
+                  data-target="#coverModal"></span></td>
     </tr>
     </tbody>
 </table>
@@ -71,9 +75,9 @@
                             </select>
                         </div>
                         <!--<div class="form-group">-->
-                            <!--<label for="exampleInputFile">封面</label>-->
-                            <!--<input type="file" name="coverImage" id="exampleInputFile">-->
-                            <!--<p class="help-block">添加文章的封面</p>-->
+                        <!--<label for="exampleInputFile">封面</label>-->
+                        <!--<input type="file" name="coverImage" id="exampleInputFile">-->
+                        <!--<p class="help-block">添加文章的封面</p>-->
                         <!--</div>-->
                     </div>
                 </div>
@@ -82,7 +86,35 @@
                     <button type="button" id="saveButton" class="btn btn-primary" onclick="modifyArticle()">保存</button>
                 </div>
             </form>
-            <iframe  id="nm_iframe" name="nm_iframe" style="display:none;"></iframe >
+            <iframe id="nm_iframe" name="nm_iframe" style="display:none;"></iframe>
+        </div>
+    </div>
+</div>
+<!--修改单个封面图Modal-->
+<!-- Modal -->
+<div class="modal fade" id="coverModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="coverModalLabel">修改文章封面图</h4>
+            </div>
+            <form class="articleForm" action="../updateOneArticleCover" method="post" enctype="multipart/form-data"
+                  target="nm_iframe">
+                <div class="modal-body">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="article_cover">文章封面</label>
+                            <input type="file" name="article_cover" class="form-control" id="article_cover">
+                            <input type="hidden" name="id" value="" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-default" onclick="hideCoverModal()"> 提交</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -93,8 +125,7 @@
         data: {
             articles: [],
         },
-        methods: {
-        },
+        methods: {},
     })
 
     // 初始化文章数据 第0页五条数据
@@ -122,6 +153,7 @@
         })
 
     }
+
     initArticle(app)
     //  表单回显原始数据
     let echoFormData = (that) => {
@@ -212,7 +244,7 @@
             let id = $(that).attr('article-id')
             console.log('id', id)
             let param = `/?id=${id}`
-            $.get(deleteArticleApi+param, function (data, status) {
+            $.get(deleteArticleApi + param, function (data, status) {
                 if (status === 'success') {
                     let result = data
                     let code = result["Code"]
@@ -222,5 +254,13 @@
                 }
             })
         }
+    }
+    function updateCover(that) {
+        let id = $(that).attr('article-id')
+        $('#coverModal input[name="id"]').val(id)
+    }
+    // 隐藏修改图片modal
+    function hideCoverModal() {
+        $('#coverModal').modal('hide')
     }
 </script>
