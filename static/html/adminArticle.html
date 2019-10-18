@@ -6,7 +6,7 @@
 <!-- Vue -->
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="../js/common.js"></script>
-<table class="my-table table table-hover  table-bordered table-striped">
+<table id="app" class="my-table table table-hover  table-bordered table-striped">
     <h1>文章管理</h1>
     <thead>
     <tr>
@@ -19,23 +19,14 @@
     </tr>
     </thead>
     <tbody>
-    <tr>
-        <td>dsadsa</td>
-        <td>dsadsa</td>
-        <td>dsadsa</td>
-        <td>dsadsa</td>
-        <td><span article-id="1" class="glyphicon glyphicon-trash" style="cursor:hand;" onclick="deleteArticle(this)"></span></td>
-        <td><span article-id="1" data-toggle="modal" data-target="#myModal" onclick="echoFormData(this)"
+    <tr v-for="article in articles">
+        <td>{{article.Id}}</td>
+        <td>{{article.ArticleTitle}}</td>
+        <td>{{article.ArticleType}}</td>
+        <td>{{article.ArticleAuthor}}</td>
+        <td><span :article-id="article.Id" class="glyphicon glyphicon-trash" style="cursor:hand;" onclick="deleteArticle(this)"></span></td>
+        <td><span :article-id="article.Id" data-toggle="modal" data-target="#myModal" onclick="echoFormData(this)"
                   class="glyphicon glyphicon-pencil" style="cursor:hand"></span></td>
-    </tr>
-    <tr>
-        <td>dsadsa</td>
-        <td>dsadsa</td>
-        <td>dsadsa</td>
-        <td>dsadsa</td>
-        <td><span class="glyphicon glyphicon-trash" style="cursor:hand;"></span></td>
-        <td><span article-id="1" data-toggle="modal" data-target="#myModal" class="glyphicon glyphicon-pencil"
-                  style="cursor:hand"></span></td>
     </tr>
     </tbody>
 </table>
@@ -50,7 +41,7 @@
                 </button>
                 <h4 class="modal-title" id="myModalLabel">修改文章属性</h4>
             </div>
-            <form class="articleForm" action="submitArticle" method="post" enctype="multipart/form-data"
+            <form class="articleForm" action="" method="post" enctype="multipart/form-data"
                   target="nm_iframe">
                 <div class="modal-body">
                     <div class="modal-body">
@@ -79,16 +70,16 @@
                                 <option value="5">前端</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="exampleInputFile">封面</label>
-                            <input type="file" name="coverImage" id="exampleInputFile">
-                            <p class="help-block">添加文章的封面</p>
-                        </div>
+                        <!--<div class="form-group">-->
+                            <!--<label for="exampleInputFile">封面</label>-->
+                            <!--<input type="file" name="coverImage" id="exampleInputFile">-->
+                            <!--<p class="help-block">添加文章的封面</p>-->
+                        <!--</div>-->
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="submit" id="saveButton" class="btn btn-primary" onclick="modifyArticle()">保存</button>
+                    <button type="button" id="saveButton" class="btn btn-primary" onclick="modifyArticle()">保存</button>
                 </div>
             </form>
             <iframe  id="nm_iframe" name="nm_iframe" style="display:none;"></iframe >
@@ -97,6 +88,41 @@
 </div>
 
 <script type="application/javascript">
+    let app = new Vue({
+        el: '#app',
+        data: {
+            articles: [],
+        },
+        methods: {
+        },
+    })
+
+    // 初始化文章数据 第0页五条数据
+    function initArticle(app) {
+        // ajax 请求
+        //发送get请求
+        let limit = 5
+        let offset = 0
+        let param = `?limit=${limit}&offset=${offset}`
+        console.log("param", param)
+        $.get(getPageArticles + param, function (data, status) {
+            console.log("data", data)
+            console.log("status", status)
+            if (status == "success") {
+                // json 转换为对象
+                // let result = JSON.parse(data)
+                let result = data
+                let objectData = result["Data"]
+
+                let code = result["Code"]
+                if (code == 200) {
+                    app.articles = objectData
+                }
+            }
+        })
+
+    }
+    initArticle(app)
     //  表单回显原始数据
     let echoFormData = (that) => {
         // 根据id获取文章原数据
@@ -126,17 +152,17 @@
 
         // 给saveButton加上id
         $('#saveButton').attr('article-id', id)
-        const mockArticle = {
-            "article_title": "标题",
-            "article_simple_content": "描述文章",
-            "article_author": "原创",
-            "type_id": 2,
-        }
+        // const mockArticle = {
+        //     "article_title": "标题",
+        //     "article_simple_content": "描述文章",
+        //     "article_author": "原创",
+        //     "type_id": 2,
+        // }
 
-        $('#article_title').attr('value', mockArticle.article_title)
-        $('#article_simple_content').attr('value', mockArticle.article_simple_content)
-        $('#article_author').attr('value', mockArticle.article_author)
-        $('#type_id').val(mockArticle.type_id)
+        $('#article_title').attr('value', article.article_title)
+        $('#article_simple_content').attr('value', article.article_simple_content)
+        $('#article_author').attr('value', article.article_author)
+        $('#type_id').val(article.type_id)
     }
 
     let modifyArticle = () => {
@@ -152,15 +178,13 @@
 
         // form 构造
         //获取上传文件
-        let file = $("#exampleInputFile").get(0).files[0];
+        // let file = $("#exampleInputFile").get(0).files[0];
         let formData = new FormData()
-        formData.append("coverImage", file)
-        formData.append("ArticleSimpleContent", requestData.ArticleSimpleContent)
-        formData.append("ArticleTitle", requestData.ArticleTitle)
-        formData.append("TypeId", requestData.TypeId)
-        formData.append("ArticleAuthor", requestData.ArticleAuthor)
-        console.log('requestData', requestData)
-        console.log('saveArticleId', id)
+        // formData.append("coverImage", file)
+        formData.append("ArticleSimpleContent", requestData.article_simple_content)
+        formData.append("ArticleTitle", requestData.article_title)
+        formData.append("TypeId", requestData.type_id)
+        formData.append("ArticleAuthor", requestData.article_author)
         $.ajax({
             type: "post",
             url: modifyArticleForm,
@@ -183,18 +207,20 @@
         $('#myModal').modal('hide')
     }
     let deleteArticle = (that) => {
-        let id = $(that).attr('article-id')
-        let param = `/?${id}`
-        $.get(deleteArticleApi+param, function (data, status) {
-            console.log('data', data)
-            console.log('status', status)
-            if (status === 'success') {
-                let result = data
-                let code = result["Code"]
-                if (code === 200) {
-                    alert('删除成功')
+        var r = confirm("是否删除？");
+        if (r == true) {
+            let id = $(that).attr('article-id')
+            console.log('id', id)
+            let param = `/?id=${id}`
+            $.get(deleteArticleApi+param, function (data, status) {
+                if (status === 'success') {
+                    let result = data
+                    let code = result["Code"]
+                    if (code === 200) {
+                        location.reload()
+                    }
                 }
-            }
-        })
+            })
+        }
     }
 </script>

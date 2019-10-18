@@ -5,6 +5,7 @@ import (
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
 	"myblog/models"
+	"strconv"
 )
 
 
@@ -21,12 +22,17 @@ func (c *DeleteOneArticleController) Get() {
 
 func deleteOneArticle(c *DeleteOneArticleController) *models.Result {
 	result := new(models.Result)
-	id, err := c.GetInt("id")
-	if err != nil {}
+	id := c.Input().Get("id")
+	logs.Info("c.Input()", c.Input())
 	o := orm.NewOrm()
 	o.Using("default")
 	article := new(models.Article)
-	article.Id = id
+	var err error
+	article.Id, err = strconv.Atoi(id)
+	if err != nil {
+		return result.Error()
+	}
+	logs.Info("id", id)
 	article.IsDel = 1
 	row, err := o.Update(article, "is_del")
 	logs.Info("row", row)

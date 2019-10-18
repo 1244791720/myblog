@@ -39,12 +39,12 @@ func modifyArticleByFormData(c *ArticleFormController) *models.Result {
 		logs.Error("form转换错误" + err.Error())
 		return result.Error()
 	}
-	uploadResult := formDataUplodaFile(c)
-	if uploadResult.Success == 0 {
-		logs.Error("上传失败--", uploadResult.Message)
-		return result.Error()
-	}
-	form.CoverUrl = formDataUplodaFile(c).Url
+	//uploadResult := formDataUplodaFile(c)
+	//if uploadResult.Success == 0 {
+	//	logs.Error("上传失败--", uploadResult.Message)
+	//	return result.Error()
+	//}
+	//form.CoverUrl = formDataUplodaFile(c).Url
 	article := new(models.Article)
 	article.Id = form.Id
 	article.ArticleAuthor = form.ArticleAuthor

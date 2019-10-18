@@ -18,6 +18,26 @@ type ArticleController struct {
 	beego.Controller
 }
 
+type ArticleVO struct {
+	Id int
+	// typeid
+    TypeId               int `json:"type_id"`
+	ArticleTitle         string `json:"article_title"`
+	ArticleSimpleContent string `json:"article_simple_content"`
+	ArticleContent       string `json:"article_content"`
+	CreateTime           string `json:"create_time"`
+	IsDel                int`json:"is_del"`
+	CoverUrl             string `json:"cover_url"`
+	// 浏览数
+	ViewNum int `json:"view_num"`
+	// 评论数
+	CommentNum int `json:"comment_num"`
+	// 喜欢
+	LikeNum int `json:"like_num"`
+	// 作者
+	ArticleAuthor string `json:"article_author"`
+}
+
 type Param struct {
 	Id string `json:"id"`
 	Content string `json:"content"`
@@ -50,9 +70,12 @@ func (this *ArticleController) Get() {
 	}
 
 	// to vo
-	vo := new(models.ArticleVO)
+	vo := new(ArticleVO)
 	vo.CreateTime = article.CreateTime.Format("2006-01-02 15:04:05")
 	vo.ArticleContent = article.ArticleContent
+	vo.ArticleSimpleContent = article.ArticleSimpleContent
+	vo.ArticleAuthor = article.ArticleAuthor
+	vo.TypeId = article.TypeId
 	vo.ArticleTitle = article.ArticleTitle
 	// 返回结果
 	this.Data["json"] = result.Success(vo)
