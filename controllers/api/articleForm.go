@@ -17,7 +17,7 @@ type ArticleFormController struct {
 	beego.Controller
 }
 type form struct {
-	Id int `formL"id"`
+	Id int `form:"id"`
 	ArticleTitle string `form:"article_title"`
 	ArticleSimpleContent string `form:"article_simple_content"`
 	ArticleAuthor string `form:"article_author"`

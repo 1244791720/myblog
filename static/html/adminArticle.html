@@ -52,17 +52,17 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="article_title">文章标题</label>
-                            <input name="article_title" class="form-control" id="article_title"
+                            <input name="article_title" class="form-control" id="article_title" value=""
                                    placeholder="标题">
                         </div>
                         <div class="form-group">
                             <label for="article_simple_content">简短描述</label>
-                            <input name="article_simple_content" class="form-control" id="article_simple_content"
+                            <input name="article_simple_content" class="form-control" id="article_simple_content" value=""
                                    placeholder="描述">
                         </div>
                         <div class="form-group">
                             <label for="article_author">作者</label>
-                            <input name="article_author" class="form-control" id="article_author" placeholder="作者">
+                            <input name="article_author" class="form-control" id="article_author" value="" placeholder="作者">
                         </div>
                         <div class="form-group">
                             <label for="type_id">文章类型</label>
@@ -113,7 +113,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-default" onclick="hideCoverModal()"> 提交</button>
+                    <button type="button" class="btn btn-default" onclick="hideCoverModal()"> 提交</button>
                 </div>
             </form>
         </div>
@@ -224,21 +224,21 @@
         let id = $('#saveButton').attr('article-id')
         let requestData = {
             "id": id,
-            "article_simple_content": $('#article_simple_content').attr('value'),
-            "article_title": $('#article_title').attr('value'),
+            "article_simple_content": $('#article_simple_content').val(),
+            "article_title": $('#article_title').val(),
             "type_id": $('#type_id').val(),
-            "article_author": $('#article_author').attr('value'),
+            "article_author": $('#article_author').val(),
         }
 
         // form 构造
         //获取上传文件
         // let file = $("#exampleInputFile").get(0).files[0];
         let formData = new FormData()
-        // formData.append("coverImage", file)
-        formData.append("ArticleSimpleContent", requestData.article_simple_content)
-        formData.append("ArticleTitle", requestData.article_title)
-        formData.append("TypeId", requestData.type_id)
-        formData.append("ArticleAuthor", requestData.article_author)
+        formData.append("id", requestData.id)
+        formData.append("article_simple_content", requestData.article_simple_content)
+        formData.append("article_title", requestData.article_title)
+        formData.append("type_id", requestData.type_id)
+        formData.append("article_author", requestData.article_author)
         $.ajax({
             type: "post",
             url: modifyArticleForm,
@@ -254,6 +254,7 @@
                     let code = result["Code"]
                     if (code == 200) {
                         alert('修改文章成功')
+                        window.location.reload()
                     }
                 }
             }
@@ -283,6 +284,7 @@
     }
     // 隐藏修改图片modal
     function hideCoverModal() {
+        $('#coverModal').submit()
         $('#coverModal').modal('hide')
     }
     // 显示分页判断
