@@ -110,7 +110,7 @@
                     </button>
                     <h4 class="modal-title" id="coverModalLabel">修改文章封面图</h4>
                 </div>
-                <form class="articleForm" action="../updateOneArticleCover" method="post" enctype="multipart/form-data"
+                <form class="articleForm" id="coverForm" action="../updateOneArticleCover" method="post" enctype="multipart/form-data"
                       target="nm_iframe">
                     <div class="modal-body">
                         <div class="modal-body">
@@ -295,7 +295,7 @@
 
     // 隐藏修改图片modal
     function hideCoverModal() {
-        $('#coverModal').submit()
+        $('#coverForm').submit()
         $('#coverModal').modal('hide')
     }
 
