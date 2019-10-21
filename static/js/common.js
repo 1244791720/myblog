@@ -21,6 +21,8 @@ const modifyArticleContent = host + "article"
 const modifyArticleForm = host + "articleForm"
 // 删除一篇文章
 const deleteArticleApi = host + "deleteOneArticle"
+// 登录
+const loginApi = host + "login"
 // 从地址栏取参数
 // getQueryString("参数名1")
 function getQueryString(name){

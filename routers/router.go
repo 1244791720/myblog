@@ -3,7 +3,9 @@ package routers
 import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
+	"github.com/astaxie/beego/logs"
 	"myblog/controllers/api"
+	"myblog/dao"
 )
 
 func init() {
@@ -13,9 +15,20 @@ func init() {
 			ctx.Request.Method = ctx.Input.Query("_method")
 		}
 	}
+	// 过滤器实现token 认证
+	var FilterToken = func(ctx *context.Context) {
+		logs.Info("过滤器")
+		token := ctx.Input.Cookie("token")
+		isRight := dao.IsRightToken(token)
+		if !isRight {
+			ctx.Redirect(302, "/adminLogin.html")
+		}
+	}
 
-	// 路由
+	// 过滤器
 	beego.InsertFilter("*", beego.BeforeRouter, FilterMethod)
+	beego.InsertFilter("/admin.html", beego.BeforeStatic, FilterToken)
+	// 路由
 	beego.Router("/article/?:id", &api.ArticleController{})
 	beego.Router("/articles", &api.ArticlesController{})
 	beego.Router("/pageArticles", &api.ArticlesPageController{})
@@ -27,9 +40,11 @@ func init() {
 	// 表单修改文章内容
 	beego.Router("/articleForm", &api.ArticleFormController{})
 	// 删除一篇文章
-	beego.Router("deleteOneArticle", &api.DeleteOneArticleController{})
+	beego.Router("/deleteOneArticle", &api.DeleteOneArticleController{})
 	// 修改一个文章封面图
-	beego.Router("updateOneArticleCover", &api.UpdateOneArticleCoverController{})
+	beego.Router("/updateOneArticleCover", &api.UpdateOneArticleCoverController{})
+	// 登录
+	beego.Router("/login", &api.LoginController{})
 
 
 }

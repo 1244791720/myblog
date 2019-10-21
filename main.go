@@ -35,7 +35,8 @@ func init() {
 	// register model
 	orm.RegisterModel(new(models.Article))
 	orm.RegisterModel(new(models.ArticleType))
-
+	orm.RegisterModel(new(models.Token))
+	orm.RegisterModel(new(models.User))
 	// create table
 	//orm.RunSyncdb("default", true, true)
 
