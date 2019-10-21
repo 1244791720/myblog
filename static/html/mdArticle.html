@@ -160,6 +160,28 @@
             $('#insertButton').show()
         } else {
             $('#updateButton').show()
+            // 修改文章时文章内容回显
+            let id = getQueryString("id")
+            var param = `/${id}`
+            // ajax 获取单个文章数据
+            $.ajax({
+                type: "get",
+                url: getOneArticle + param,
+                async: false,
+                success: function (data, status) {
+                    console.log("data", data)
+                    console.log("status", status)
+                    if (status == "success") {
+                        let result = data
+                        let objectData = result["Data"]
+                        console.log("objectData", objectData.article_content)
+                        let code = result["Code"]
+                        if (code == 200) {
+                            $('#test-editormd textarea').text(objectData.article_content)
+                        }
+                    }
+                }
+            });
         }
     }
     showUpdateOrInsert()
