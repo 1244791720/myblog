@@ -23,6 +23,8 @@ const modifyArticleForm = host + "articleForm"
 const deleteArticleApi = host + "deleteOneArticle"
 // 登录
 const loginApi = host + "login"
+// 阅读数加1
+const viewNumIncreaseApi = host + "viewNum"
 // 从地址栏取参数
 // getQueryString("参数名1")
 function getQueryString(name){

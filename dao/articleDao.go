@@ -26,4 +26,31 @@ func ModifyArticle(id,content string) error {
 	return nil
 }
 
+func GetOneArticle(id int) (*models.Article, error) {
+	article := new(models.Article)
+	o := orm.NewOrm()
+	o.Using("default")
+	article.Id = id
+
+	// 获取article数据
+	err := o.Read(article)
+	if err != nil {
+		return nil, err
+	}
+	return article, err
+}
+
+func ViewNumIncrease(id, viewNum int) error {
+	o := orm.NewOrm()
+	o.Using("default")
+	article := new(models.Article)
+	article.Id = id
+	article.ViewNum = viewNum + 1
+	_, err := o.Update(article, "view_num")
+	if err != nil {
+		logs.Error(err.Error())
+		return err
+	}
+	return nil
+}
 

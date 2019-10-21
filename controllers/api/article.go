@@ -77,6 +77,7 @@ func (this *ArticleController) Get() {
 	vo.ArticleAuthor = article.ArticleAuthor
 	vo.TypeId = article.TypeId
 	vo.ArticleTitle = article.ArticleTitle
+	vo.ViewNum = article.ViewNum
 	// 返回结果
 	this.Data["json"] = result.Success(vo)
 	this.ServeJSON()

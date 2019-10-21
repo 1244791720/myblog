@@ -96,18 +96,18 @@
         data: {
             articleTitle: "JVM内存划分",
             articleHtml: "",
-            article:{},
+            article: {},
         },
         methods: {
-            showArticleHtml: function(app) {
+            showArticleHtml: function (app) {
                 let id = getQueryString("id")
                 var param = `/${id}`
                 // ajax 获取单个文章数据
                 $.ajax({
-                    type : "get",
-                    url : getOneArticle + param,
-                    async : false,
-                    success : function(data, status){
+                    type: "get",
+                    url: getOneArticle + param,
+                    async: false,
+                    success: function (data, status) {
                         console.log("data", data)
                         console.log("status", status)
                         if (status == "success") {
@@ -138,10 +138,22 @@
                     codeFold: true
                 });
             },
+            // 阅读数加1
+            viewNumIncrease: function () {
+                let id = getQueryString("id")
+                $.ajax({
+                    url: viewNumIncreaseApi,
+                    type: "post",
+                    async: false,
+                    data: {
+                        id: id,
+                    }
+                })
+            }
         },
         created: function () {
             this.showArticleHtml(this)
-
+            this.viewNumIncrease()
         }
     })
     app.initEditor()

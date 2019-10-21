@@ -45,6 +45,7 @@ func init() {
 	beego.Router("/updateOneArticleCover", &api.UpdateOneArticleCoverController{})
 	// 登录
 	beego.Router("/login", &api.LoginController{})
-
+	// 文章阅读数加一
+	beego.Router("/viewNum", &api.ViewNumController{})
 
 }
