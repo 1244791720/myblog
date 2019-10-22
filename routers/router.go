@@ -3,7 +3,6 @@ package routers
 import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
-	"github.com/astaxie/beego/logs"
 	"myblog/controllers/api"
 	"myblog/dao"
 )
@@ -17,7 +16,6 @@ func init() {
 	}
 	// 过滤器实现token 认证
 	var FilterToken = func(ctx *context.Context) {
-		logs.Info("过滤器")
 		token := ctx.Input.Cookie("token")
 		isRight := dao.IsRightToken(token)
 		if !isRight {
@@ -47,5 +45,7 @@ func init() {
 	beego.Router("/login", &api.LoginController{})
 	// 文章阅读数加一
 	beego.Router("/viewNum", &api.ViewNumController{})
+	// 获取文章类型列表
+	beego.Router("/articleType", &api.ArticleTypeController{})
 
 }

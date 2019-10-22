@@ -25,6 +25,8 @@ const deleteArticleApi = host + "deleteOneArticle"
 const loginApi = host + "login"
 // 阅读数加1
 const viewNumIncreaseApi = host + "viewNum"
+// 获取所有文章类型
+const articleTypesApi = host + "articleType"
 // 从地址栏取参数
 // getQueryString("参数名1")
 function getQueryString(name){

@@ -29,10 +29,11 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                aria-hidden="true">&times;</span></button>
+                            aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="myModalLabel">编辑文章</h4>
                 </div>
-                <form class="articleForm" action="../submitArticle" method="post" enctype="multipart/form-data" target="nm_iframe">
+                <form class="articleForm" action="../submitArticle" method="post" enctype="multipart/form-data"
+                      target="nm_iframe">
                     <div class="modal-body">
 
                         <div class="form-group">
@@ -54,11 +55,13 @@
                             <!--<input name="type_id" class="form-control" id="type_id" placeholder="类型">-->
                             <!--todo 后端生成文章类型列表-->
                             <select name="type_id" id="type_id">
-                                <option value="1">技术杂谈</option>
-                                <option value="2">Java</option>
-                                <option value="3">GO</option>
-                                <option value="4">JavaScript</option>
-                                <option value="5">前端</option>
+                                <option v-for="articleType in articleTypes" :value="articleType.Id">
+                                    {{articleType.ArticleType}}
+                                </option>
+                                <!--<option value="2">Java</option>-->
+                                <!--<option value="3">GO</option>-->
+                                <!--<option value="4">JavaScript</option>-->
+                                <!--<option value="5">前端</option>-->
                             </select>
                         </div>
                         <div class="form-group">
@@ -66,15 +69,16 @@
                             <input type="file" name="coverImage" id="exampleInputFile">
                             <p class="help-block">添加文章的封面</p>
                         </div>
-                        <input type="hidden" id="hiden_content" name="article_content" value="000s" />
-                        <input type="hidden" id="article_id" name="article_content" value="-1" />
+                        <input type="hidden" id="hiden_content" name="article_content" value="000s"/>
+                        <!--<input type="hidden" id="article_id" name="article_content" value="-1"/>-->
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="hideForm()">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="hideForm()">保存
+                        </button>
                         <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
                     </div>
                 </form>
-                <iframe  id="nm_iframe" name="nm_iframe" style="display:none;"></iframe >
+                <iframe id="nm_iframe" name="nm_iframe" style="display:none;"></iframe>
             </div>
         </div>
     </div>
@@ -114,6 +118,8 @@
         $('#myModal').modal({
             show: true
         })
+        let content = $('.editormd-markdown-textarea').val()
+        $('#hiden_content').val(content)
     })
 
     // 表单隐藏
@@ -134,14 +140,14 @@
         // ajax 存入文章内容
         let content = $('.editormd-markdown-textarea').val()
         let data = {
-                    "id": id,
-                    "content":content
+            "id": id,
+            "content": content
         }
         $.ajax({
-            url:modifyArticleContent,
-            type:"post",
-            dataType:"json",
-            data:JSON.stringify(data),
+            url: modifyArticleContent,
+            type: "post",
+            dataType: "json",
+            data: JSON.stringify(data),
             headers: {'Content-Type': 'application/json'},
             success: function (data, status) {
                 console.log("data:", data)
@@ -185,6 +191,30 @@
         }
     }
     showUpdateOrInsert()
+    new Vue({
+        el: '#myModal',
+        data: {
+            articleTypes: []
+        },
+        methods: {
+            initArticleTypes: (app) => {
+                $.ajax({
+                    url: articleTypesApi,
+                    type: "get",
+                    success: function (data, status) {
+                        if (status === "success") {
+                            if (data.Code === 200) {
+                                app.articleTypes = data.Data
+                            }
+                        }
+                    }
+                })
+            }
+        },
+        created: function () {
+           this.initArticleTypes(this)
+        }
+    })
 </script>
 </body>
 </html>

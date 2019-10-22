@@ -25,54 +25,50 @@
 <script src="../js/common.js"></script>
 <body>
 <!-- 导航 -->
-<nav class="navbar navbar-default" style="width:100%">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">黄祖珏の博客</a>
-        </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="index.html">首页 <span class="sr-only">(current)</span></a></li>
-                <li><a href="#">随笔</a></li>
-                <li><a href="#">给我留言</a></li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">技术杂谈<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">Java</a></li>
-                        <li><a href="#">Go</a></li>
-                        <li><a href="#">前端</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">One more separated link</a></li>
-                    </ul>
-                </li>
-            </ul>
-            <form class="navbar-form navbar-left">
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search">
-                </div>
-                <button type="submit" class="btn btn-default">搜索</button>
-            </form>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-user" style="margin-right:10px"></span>注册</a></li>
-                <li><a href="#"><span class="glyphicon glyphicon-link" style="margin-right:10px"></span>登录</a></li>
-            </ul>
-        </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
-</nav>
 <div id="app" class="row">
+    <nav class="navbar navbar-default" style="width:100%;padding-left: 4%;">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">黄祖珏の博客</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="index.html">首页 <span class="sr-only">(current)</span></a></li>
+                    <li><a href="#">随笔</a></li>
+                    <li><a href="#">给我留言</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">技术杂谈<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li v-for="articleType in articleTypes" :value="articleType.Id">
+                                <a>{{articleType.ArticleType}}</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <form class="navbar-form navbar-left">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search">
+                    </div>
+                    <button type="submit" class="btn btn-default">搜索</button>
+                </form>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#"><span class="glyphicon glyphicon-user" style="margin-right:10px"></span>注册</a></li>
+                    <li><a href="#"><span class="glyphicon glyphicon-link" style="margin-right:10px"></span>登录</a></li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
     <div class="col-md-2 article-left"></div>
     <div class="article col-md-7">
         <div class="article-title">
@@ -97,6 +93,7 @@
             articleTitle: "JVM内存划分",
             articleHtml: "",
             article: {},
+            articleTypes: [],
         },
         methods: {
             showArticleHtml: function (app) {
@@ -149,11 +146,25 @@
                         id: id,
                     }
                 })
-            }
+            },
+            initArticleTypes: (app) => {
+                $.ajax({
+                    url: articleTypesApi,
+                    type: "get",
+                    success: function (data, status) {
+                        if (status === "success") {
+                            if (data.Code === 200) {
+                                app.articleTypes = data.Data
+                            }
+                        }
+                    }
+                })
+            },
         },
         created: function () {
             this.showArticleHtml(this)
             this.viewNumIncrease()
+            this.initArticleTypes(this)
         }
     })
     app.initEditor()
