@@ -27,6 +27,8 @@ const loginApi = host + "login"
 const viewNumIncreaseApi = host + "viewNum"
 // 获取所有文章类型
 const articleTypesApi = host + "articleType"
+// 根据关键词查找文章
+const searchByKeyWordApi = host + "searchByKeyWord"
 // 从地址栏取参数
 // getQueryString("参数名1")
 function getQueryString(name){

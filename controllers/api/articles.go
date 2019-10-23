@@ -89,7 +89,7 @@ func getArticlesByPage(articlesPageController ArticlesPageController) *models.Re
 	articleVOList := make([]models.ArticleVO, 0)
 	for _, article := range articleList {
 		// 获取type
-		articleType, err := dao.GetArticleTypeById(article.Id)
+		articleType, err := dao.GetArticleTypeById(article.TypeId)
 		if err != nil {
 			return result.Error()
 		}

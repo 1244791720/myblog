@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
+	"goblog/myblog/dao"
 	"myblog/models"
 	"strconv"
 )
 
-func ModifyArticle(id,content string) error {
+func ModifyArticle(id, content string) error {
 	o := orm.NewOrm()
 	o.Using("default")
 	article := new(models.Article)
@@ -54,3 +55,41 @@ func ViewNumIncrease(id, viewNum int) error {
 	return nil
 }
 
+func SearchByKeyWord(keyWord string) (*[]models.ArticleVO, error) {
+	articles := new([]models.Article)
+	o := orm.NewOrm()
+	err := o.Using("default")
+	if err != nil {
+		logs.Error(err.Error())
+		return nil, err
+	}
+	_, err = o.QueryTable("article").Filter("article_title__icontains", keyWord).All(articles)
+	if err != nil {
+		logs.Error(err.Error())
+		return nil, err
+	}
+	// article to articleVo
+	articleVos := make([]models.ArticleVO, 0)
+	for _, article := range *articles {
+		var articleVo models.ArticleVO
+		articleVo.Id = article.Id
+		articleType, err := dao.GetArticleTypeById(article.TypeId)
+		if err != nil {
+			logs.Error(err.Error())
+			return nil, err
+		}
+		articleVo.ArticleType = articleType
+		articleVo.ViewNum = article.ViewNum
+		articleVo.CoverUrl = article.CoverUrl
+		articleVo.ArticleAuthor = article.ArticleAuthor
+		articleVo.ArticleSimpleContent = article.ArticleSimpleContent
+		articleVo.CommentNum = article.CommentNum
+		articleVo.LikeNum = article.LikeNum
+		articleVo.CreateTime = article.CreateTime.Format("2006-01-02 15:04:05")
+		articleVo.ArticleTitle = article.ArticleTitle
+		articleVos = append(articleVos, articleVo)
+
+	}
+
+	return &articleVos, err
+}

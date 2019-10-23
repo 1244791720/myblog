@@ -47,5 +47,7 @@ func init() {
 	beego.Router("/viewNum", &api.ViewNumController{})
 	// 获取文章类型列表
 	beego.Router("/articleType", &api.ArticleTypeController{})
+	// 按照关键词分页获取文章
+	beego.Router("/searchByKeyWord", &api.SearchByKeyWordController{})
 
 }

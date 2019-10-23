@@ -19,137 +19,140 @@
 <!-- common.js -->
 <script src="../js/common.js"></script>
 <body>
-<!-- 导航 -->
-<nav class="navbar navbar-default" style="width:100%">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">黄祖珏の博客</a>
-        </div>
+<div id="app">
+    <!-- 导航 -->
+    <nav class="navbar navbar-default" style="width:100%;padding-left: 4%;">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">黄祖珏の博客</a>
+            </div>
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="index.html">首页 <span class="sr-only">(current)</span></a></li>
-                <li><a href="#">随笔</a></li>
-                <li><a href="#">给我留言</a></li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">技术杂谈<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">Java</a></li>
-                        <li><a href="#">Go</a></li>
-                        <li><a href="#">前端</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">One more separated link</a></li>
-                    </ul>
-                </li>
-            </ul>
-            <form class="navbar-form navbar-left">
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search">
-                </div>
-                <button type="submit" class="btn btn-default">搜索</button>
-            </form>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-user" style="margin-right:10px"></span>注册</a></li>
-                <li><a href="#"><span class="glyphicon glyphicon-link" style="margin-right:10px"></span>登录</a></li>
-            </ul>
-        </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
-</nav>
-<!-- body -->
-<div id="app" class="page-body row">
-    <div class="page-left col-md-8">
-        <div v-cloak class="article" v-for="article in articles">
-            <span class="label label-primary label-font" v-cloak>{{article.ArticleType}}</span>
-            <a :href="'article.html?id='+article.Id"><span class="article-title" v-cloak>{{article.ArticleTitle}}</span></a>
-            <div class="article-content row">
-                <div class="col-md-3" style="margin:10px 0;">
-                    <img width="100%" :src="article.CoverUrl" alt="" :alt="article.ArticleTitle">
-                </div>
-                <div class="col-md-7" style="margin: 10px 0px;">
-                    <div v-cloak class="article-content-center" style="min-height: 40px;">
-                        <a :href="'article.html?id='+article.Id">{{article.ArticleSimpleContent}}</a>
-                    </div>
-                    <div class="article-content-booton">
-                        <ul>
-                            <li>{{article.ArticleAuthor}}</li>
-                            <li>{{article.CreateTime}}</li>
-                            <li>{{article.ViewNum}}浏览</li>
-                            <li>{{article.CommentNum}}评论</li>
-                            <li>{{article.LikeNum}}喜欢</li>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="index.html">首页 <span class="sr-only">(current)</span></a></li>
+                    <li><a href="#">随笔</a></li>
+                    <li><a href="#">给我留言</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                           aria-haspopup="true"
+                           aria-expanded="false">技术杂谈<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li v-for="articleType in articleTypes" :value="articleType.Id">
+                                <a>{{articleType.ArticleType}}</a>
+                            </li>
                         </ul>
+                    </li>
+                </ul>
+                <form class="navbar-form navbar-left" target="nm_iframe">
+                    <div class="form-group">
+                        <input type="text" name="keyWorld" id="searchInput" class="form-control"
+                               placeholder="Search">
+                    </div>
+                    <button type="submit" class="btn btn-default" @click="search">搜索</button>
+                </form>
+                <iframe id="nm_iframe" name="nm_iframe" style="display:none;"></iframe>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#"><span class="glyphicon glyphicon-user" style="margin-right:10px"></span>注册</a>
+                    </li>
+                    <li><a href="#"><span class="glyphicon glyphicon-link" style="margin-right:10px"></span>登录</a>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+    <!-- body -->
+    <div  class="page-body row">
+        <div class="page-left col-md-8">
+            <div v-cloak class="article" v-for="article in articles">
+                <span class="label label-primary label-font" v-cloak>{{article.ArticleType}}</span>
+                <a :href="'article.html?id='+article.Id"><span class="article-title" v-cloak>{{article.ArticleTitle}}</span></a>
+                <div class="article-content row">
+                    <div class="col-md-3" style="margin:10px 0;">
+                        <img width="100%" :src="article.CoverUrl" alt="" :alt="article.ArticleTitle">
+                    </div>
+                    <div class="col-md-7" style="margin: 10px 0px;">
+                        <div v-cloak class="article-content-center" style="min-height: 40px;">
+                            <a :href="'article.html?id='+article.Id">{{article.ArticleSimpleContent}}</a>
+                        </div>
+                        <div class="article-content-booton">
+                            <ul>
+                                <li>{{article.ArticleAuthor}}</li>
+                                <li>{{article.CreateTime}}</li>
+                                <li>{{article.ViewNum}}浏览</li>
+                                <li>{{article.CommentNum}}评论</li>
+                                <li>{{article.LikeNum}}喜欢</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- 分页 -->
-         <nav v-if="showPage" aria-label="Page navigation">
-            <ul class="pagination pagination-md">
-                <li>
-                    <a href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <li onclick="toPage(this)"><a href="#">1</a></li>
-                <li onclick="toPage(this)" v-for="pageNum in page" :pageNum="pageNum"><a href="#">{{pageNum}}</a></li>
-                <li>
-                    <a href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-    <div class="page-right  col-md-3 ">
-        <div class="panel panel-default">
-            <div class="panel-heading">推荐文章</div>
-            <div class="panel-body">
-                <div class="right-article  col-md-12">
-                    <div class="right-article-img col-md-4">
-                        <img width="100%" src="http://www.zbboke.com/uploads/allimg/180626/1-1P626192T9222-lp.png"
-                             alt="">
-                    </div>
-                    <div class="col-md-8">
-                        <div class="title">
-                            <span>用SVG画出拼图块，并实现拼图功能，请收下我的膝盖</span>
+            <!-- 分页 -->
+            <nav v-if="showPage" aria-label="Page navigation">
+                <ul class="pagination pagination-md">
+                    <li>
+                        <a href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li onclick="toPage(this)"><a href="#">1</a></li>
+                    <li onclick="toPage(this)" v-for="pageNum in page" :pageNum="pageNum"><a href="#">{{pageNum}}</a></li>
+                    <li>
+                        <a href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="page-right  col-md-3 ">
+            <div class="panel panel-default">
+                <div class="panel-heading">推荐文章</div>
+                <div class="panel-body">
+                    <div class="right-article  col-md-12">
+                        <div class="right-article-img col-md-4">
+                            <img width="100%" src="http://www.zbboke.com/uploads/allimg/180626/1-1P626192T9222-lp.png"
+                                 alt="">
                         </div>
-                        <div class="page-right-content">
-                            <div class="date">
-                                <span>2018-07-07</span>
+                        <div class="col-md-8">
+                            <div class="title">
+                                <span>用SVG画出拼图块，并实现拼图功能，请收下我的膝盖</span>
                             </div>
-                            <div class="readNum">
-                                <span>1766次阅读</span>
+                            <div class="page-right-content">
+                                <div class="date">
+                                    <span>2018-07-07</span>
+                                </div>
+                                <div class="readNum">
+                                    <span>1766次阅读</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="right-article  col-md-12">
-                    <div class="right-article-img col-md-4">
-                        <img width="100%" src="http://www.zbboke.com/uploads/allimg/180626/1-1P626192T9222-lp.png"
-                             alt="">
-                    </div>
-                    <div class="col-md-8">
-                        <div class="title">
-                            <span>用SVG画出拼图块，并实现拼图功能，请收下我的膝盖</span>
+                    <div class="right-article  col-md-12">
+                        <div class="right-article-img col-md-4">
+                            <img width="100%" src="http://www.zbboke.com/uploads/allimg/180626/1-1P626192T9222-lp.png"
+                                 alt="">
                         </div>
-                        <div class="page-right-content">
-                            <div class="date">
-                                <span>2018-07-07</span>
+                        <div class="col-md-8">
+                            <div class="title">
+                                <span>用SVG画出拼图块，并实现拼图功能，请收下我的膝盖</span>
                             </div>
-                            <div class="readNum">
-                                <span>1766次阅读</span>
+                            <div class="page-right-content">
+                                <div class="date">
+                                    <span>2018-07-07</span>
+                                </div>
+                                <div class="readNum">
+                                    <span>1766次阅读</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -168,14 +171,13 @@
             showPage: false,
             // 分页页码数组
             page: [],
+            articleTypes: [],
         },
         methods: {
-            // 页面跳转
-            jumpArticlePage: function (e) {
-                const orderData = { 'orderId': 123, 'price': 88 }
-                sessionStorage.setItem('缓存名称', JSON.stringify(orderData))
-                console.log(e)
-                // window.location.href = "article.html"
+            search: () => {
+                let keyWord = $("#searchInput").val()
+                sessionStorage.setItem('keyWord', keyWord)
+                window.location.href = "keyWordSearchResult.html"
             }
         },
     })
