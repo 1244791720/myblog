@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户注册</title>
+    <link href="favicon.ico" rel="shortcut icon"/>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/3.4.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="../js/common.js"></script>
+<body>
+<div class="modal-dialog" style="margin-top: 10%;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title text-center" id="myModalLabel">注册</h4>
+        </div>
+        <div class="modal-body" id="model-body">
+            <div class="form-group">
+                <input id="username" type="text" name="username" class="form-control" placeholder="用户名"
+                       autocomplete="off">
+            </div>
+            <div class="form-group">
+                <input id="password" type="password" name="password" class="form-control" placeholder="密码"
+                       autocomplete="off">
+            </div>
+            <div class="form-group">
+                <input id="confirmPassword" type="password"  class="form-control" placeholder="确认密码"
+                       autocomplete="off">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="form-group">
+                <button type="button" class="btn btn-primary form-control" onclick="userSubmit()">注册</button>
+            </div>
+        </div>
+    </div><!-- /.modal-content -->
+</div><!-- /.modal -->
+</body>
+<script type="application/javascript">
+   function userSubmit() {
+       // 密码和重复密码不一致，弹窗警告
+       if ($("#password").val() != $("#confirmPassword").val()) {
+           alert("两次密码输入不一致!!!")
+       } else {
+           // 注册用户
+           $.ajax({
+               url: userSubmitApi,
+               data: {
+                   username: $('#username').val(),
+                   password: $('#password').val(),
+               },
+               type: "post",
+               success: (data, status) => {
+                   if (status === "success") {
+                       if (data.Code === 200) {
+                           // 注册成功后弹窗提示成功，确认后跳转登录页
+                           let ok = confirm("注册成功，马上去登录吧~")
+                           if (ok) {
+                               window.location.href = "adminLogin.html"
+                           }
+                       }
+                       if (data.Code === 401) {
+                           alert("用户名已存在")
+                       }
+                   }
+               }
+           })
+       }
+       //
+
+   }
+</script>
+</html>

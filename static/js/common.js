@@ -29,10 +29,39 @@ const viewNumIncreaseApi = host + "viewNum"
 const articleTypesApi = host + "articleType"
 // 根据关键词查找文章
 const searchByKeyWordApi = host + "searchByKeyWord"
+// 用户注册
+const userSubmitApi = host + "userSubmit"
+
 // 从地址栏取参数
 // getQueryString("参数名1")
 function getQueryString(name){
     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
     var r = window.location.search.substr(1).match(reg);
     if(r!=null)return  unescape(r[2]); return null;
+}
+
+// 登录成功后登录变为用户姓名
+function showUsernameWhenLoginInNav() {
+    // $("#userSpaceButton").hide()
+    // $("#loginButton").hide()
+    // $("#logoutButton").hide()
+    // $("#navSubmitButton").hide()
+    console.log('执行了')
+    let token = $.cookie('token')
+    let userTypeId = $.cookie('user_type_id')
+    if (token != null && userTypeId == 1) {
+        // 用户登录进来
+        $("#userSpaceButton").show()
+        $("#logoutButton").show()
+    } else {
+        $("#loginButton").show()
+        $("#navSubmitButton").show()
+    }
+}
+
+// 用户退出登录
+function logout() {
+    $.removeCookie('token')
+    $.removeCookie('user_type_id')
+    window.location.href = "adminLogin.html"
 }

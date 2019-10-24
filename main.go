@@ -6,9 +6,9 @@ import (
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/plugins/cors"
+	"log"
 	"myblog/models"
 	_ "myblog/routers"
-	"log"
 )
 
 func init() {

@@ -23,9 +23,11 @@
 <script src="../lib/jquery.flowchart.min.js"></script>
 <script src="../js/editormd.js"></script>
 <script src="../js/common.js"></script>
+<script src="//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 <body>
 <!-- 导航 -->
 <div id="app" class="row">
+    <!-- 导航 -->
     <nav class="navbar navbar-default" style="width:100%;padding-left: 4%;">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -37,7 +39,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">黄祖珏の博客</a>
+                <a class="navbar-brand" href="#">咸鱼之家</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -47,7 +49,8 @@
                     <li><a href="#">随笔</a></li>
                     <li><a href="#">给我留言</a></li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                           aria-haspopup="true"
                            aria-expanded="false">技术杂谈<span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li v-for="articleType in articleTypes" :value="articleType.Id">
@@ -58,14 +61,26 @@
                 </ul>
                 <form class="navbar-form navbar-left" target="nm_iframe">
                     <div class="form-group">
-                        <input type="text" name="keyWorld" id="searchInput" class="form-control" placeholder="Search">
+                        <input type="text" name="keyWorld" id="searchInput" class="form-control"
+                               placeholder="Search">
                     </div>
-                    <button type="submit" class="btn btn-default"  @click="search" >搜索</button>
+                    <button type="submit" class="btn btn-default" @click="search">搜索</button>
                 </form>
                 <iframe id="nm_iframe" name="nm_iframe" style="display:none;"></iframe>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#"><span class="glyphicon glyphicon-user" style="margin-right:10px"></span>注册</a></li>
-                    <li><a href="#"><span class="glyphicon glyphicon-link" style="margin-right:10px"></span>登录</a></li>
+                    <li style="display: none;" id="navSubmitButton"><a href="submit.html"><span class="glyphicon glyphicon-user"
+                                                                         style="margin-right:10px"></span>注册</a>
+                    </li>
+                    <li style="display: none;"  id="loginButton"><a href="adminLogin.html"><span class="glyphicon glyphicon-link"
+                                                                         style="margin-right:10px"></span>登录</a>
+                    </li>
+                    <li style="display: none;" id="logoutButton" onclick="logout()"><a href="javascript:void(0);"><span class="glyphicon glyphicon-link"
+                                                                                                 style="margin-right:10px"></span>退出</a>
+                    </li>
+                    <li style="display: none;" id="userSpaceButton"><a href="userSpace.html"><span class="glyphicon glyphicon-link"
+                                                                            style="margin-right:10px"></span>用户空间</a>
+                    </li>
+
                 </ul>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
@@ -174,6 +189,7 @@
         }
     })
     app.initEditor()
+    showUsernameWhenLoginInNav()
 </script>
 
 </html>

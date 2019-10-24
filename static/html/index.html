@@ -14,6 +14,7 @@
 <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
 <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 <!-- Vue -->
 <script src="../js/vue.min.js"></script>
 <!-- common.js -->
@@ -32,7 +33,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">黄祖珏の博客</a>
+                <a class="navbar-brand" href="#">咸鱼之家</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -61,20 +62,29 @@
                 </form>
                 <iframe id="nm_iframe" name="nm_iframe" style="display:none;"></iframe>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#"><span class="glyphicon glyphicon-user" style="margin-right:10px"></span>注册</a>
+                    <li style="display: none;" id="navSubmitButton"><a href="submit.html"><span class="glyphicon glyphicon-user"
+                                                                                                style="margin-right:10px"></span>注册</a>
                     </li>
-                    <li><a href="#"><span class="glyphicon glyphicon-link" style="margin-right:10px"></span>登录</a>
+                    <li style="display: none;"  id="loginButton"><a href="adminLogin.html"><span class="glyphicon glyphicon-link"
+                                                                                                 style="margin-right:10px"></span>登录</a>
+                    </li>
+                    <li style="display: none;" id="logoutButton" onclick="logout()"><a href="javascript:void(0);"><span class="glyphicon glyphicon-link"
+                                                                                                                        style="margin-right:10px"></span>退出</a>
+                    </li>
+                    <li style="display: none;" id="userSpaceButton"><a href="userSpace.html"><span class="glyphicon glyphicon-link"
+                                                                                                   style="margin-right:10px"></span>用户空间</a>
                     </li>
                 </ul>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
     <!-- body -->
-    <div  class="page-body row">
+    <div class="page-body row">
         <div class="page-left col-md-8">
             <div v-cloak class="article" v-for="article in articles">
                 <span class="label label-primary label-font" v-cloak>{{article.ArticleType}}</span>
-                <a :href="'article.html?id='+article.Id"><span class="article-title" v-cloak>{{article.ArticleTitle}}</span></a>
+                <a :href="'article.html?id='+article.Id"><span class="article-title"
+                                                               v-cloak>{{article.ArticleTitle}}</span></a>
                 <div class="article-content row">
                     <div class="col-md-3" style="margin:10px 0;">
                         <img width="100%" :src="article.CoverUrl" alt="" :alt="article.ArticleTitle">
@@ -105,7 +115,8 @@
                         </a>
                     </li>
                     <li onclick="toPage(this)"><a href="#">1</a></li>
-                    <li onclick="toPage(this)" v-for="pageNum in page" :pageNum="pageNum"><a href="#">{{pageNum}}</a></li>
+                    <li onclick="toPage(this)" v-for="pageNum in page" :pageNum="pageNum"><a href="#">{{pageNum}}</a>
+                    </li>
                     <li>
                         <a href="#" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
@@ -178,8 +189,24 @@
                 let keyWord = $("#searchInput").val()
                 sessionStorage.setItem('keyWord', keyWord)
                 window.location.href = "keyWordSearchResult.html"
-            }
+            },
+            initArticleTypes: (app) => {
+                $.ajax({
+                    url: articleTypesApi,
+                    type: "get",
+                    success: function (data, status) {
+                        if (status === "success") {
+                            if (data.Code === 200) {
+                                app.articleTypes = data.Data
+                            }
+                        }
+                    }
+                })
+            },
         },
+        created: function () {
+            this.initArticleTypes(this)
+        }
     })
 
     // 初始化文章数据 第0页五条数据
@@ -207,6 +234,7 @@
         })
 
     }
+
     // 显示分页判断
     function showPage(app) {
         // ajax获取数据量
@@ -225,15 +253,15 @@
                     if (count > 5) {
                         app.showPage = true
                         // 每5个分一页
-                        let arr=new Array();
+                        let arr = new Array();
                         let totalPage = parseInt(count / 5)
                         let onePage = totalPage
                         if (count % 5 > 0) {
                             onePage++
                         }
-                        while (onePage > 1)  {
+                        while (onePage > 1) {
                             arr.unshift(onePage)
-                            onePage --
+                            onePage--
                         }
                         app.page = arr
                     }
@@ -242,13 +270,14 @@
         })
 
     }
+
     var toPage = (that) => {
         let pageNum = that.getAttribute('pageNum')
         // let pageNum = $(that).atrr('pageNum')
         // ajax 请求
         //发送get请求
         let limit = 5
-        let offset = (pageNum-1) * limit
+        let offset = (pageNum - 1) * limit
         let param = `?limit=${limit}&offset=${offset}`
         console.log("param", param)
         $.get(getPageArticles + param, function (data, status) {
@@ -268,8 +297,10 @@
         })
 
     }
+
     initArticle(app)
     // 分页相关逻辑
     showPage(app)
+    showUsernameWhenLoginInNav()
 </script>
 </html>

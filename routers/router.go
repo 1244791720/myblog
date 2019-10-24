@@ -3,6 +3,7 @@ package routers
 import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
+	"github.com/astaxie/beego/logs"
 	"myblog/controllers/api"
 	"myblog/dao"
 	"strconv"
@@ -21,13 +22,19 @@ func init() {
 		userTypeId := ctx.Input.Cookie("user_type_id")
 		intId, err := strconv.Atoi(userTypeId)
 		if err != nil {
+			logs.Error(err.Error())
 			ctx.Redirect(302, "/adminLogin.html")
 		}
 		isRight := dao.IsRightToken(token)
+		// 用户存在且身份为用户，跳转首页
+		if isRight && intId == 1 {
+			ctx.Redirect(302, "/index.html")
+		}
 		// 用户存在且身份为管理员，除此之外登录不进
 		if !(isRight && intId == 2) {
-			ctx.Redirect(302, "/adminLogin.html")
+			ctx.Redirect(302, "adminLogin.html")
 		}
+		logs.Info("user_type_id", intId)
 	}
 
 	// 过滤器
@@ -56,5 +63,7 @@ func init() {
 	beego.Router("/articleType", &api.ArticleTypeController{})
 	// 按照关键词分页获取文章
 	beego.Router("/searchByKeyWord", &api.SearchByKeyWordController{})
+	// 用户注册
+	beego.Router("/userSubmit", &api.UserSubmitController{})
 
 }

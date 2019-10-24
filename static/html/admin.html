@@ -13,42 +13,45 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
 <!-- Vue -->
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-
+<script src="//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 <body>
-    <!--nav-->
-        <nav class="navbar navbar-default">
-            <div class="container-fluid">
-                <!-- Brand and toggle get grouped for better mobile display -->
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#">博客后台</a>
-                </div>
-
-                <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul class="nav navbar-nav">
-                        <li><a href="mdArticle.html">写文章</a></li>
-                    </ul>
-                </div><!-- /.navbar-collapse -->
-            </div><!-- /.container-fluid -->
-        </nav>
-        <div class="container row" >
-            <div class="left-nav col-md-2">
-                <ul class="nav nav-pills nav-stacked">
-                    <li role="presentation"  _link="adminArticle.html"><a href="#">文章管理</a></li>
-                    <li role="presentation" _link="adminUser.html"><a href="#">用户管理</a></li>
-                    <li role="presentation"_link="adminArticle.html"><a href="#">评论管理</a></li>
-                </ul>
-            </div>
-            <div class="right-content col-md-9">
-                <iframe id="content-iframe" width="100%" height="100% " src="adminArticle.html" frameborder="0" class=""></iframe>
-            </div>
+<!--nav-->
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">博客后台</a>
         </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a href="mdArticle.html">写文章</a></li>
+                <li><a onclick="logout()">退出登录</a></li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+<div class="container row">
+    <div class="left-nav col-md-2">
+        <ul class="nav nav-pills nav-stacked">
+            <li role="presentation" _link="adminArticle.html"><a href="#">文章管理</a></li>
+            <li role="presentation" _link="adminUser.html"><a href="#">用户管理</a></li>
+            <li role="presentation" _link="adminArticle.html"><a href="#">评论管理</a></li>
+        </ul>
+    </div>
+    <div class="right-content col-md-9">
+        <iframe id="content-iframe" width="100%" height="100% " src="adminArticle.html" frameborder="0"
+                class=""></iframe>
+    </div>
+</div>
 
 </body>
 <script type="application/javascript">
@@ -66,7 +69,7 @@
                 $(this).addClass("active")
                 let link = $(this).attr("_link")
                 console.log("link", link)
-                $("#content-iframe").attr("src",link)
+                $("#content-iframe").attr("src", link)
             })
 
         })
@@ -75,6 +78,13 @@
     function changeFrameHeight() {
         $('#content-iframe').css('height', window.screen.availHeight)
     }
+
+    function logout() {
+        $.removeCookie('token')
+        $.removeCookie('user_type_id')
+        window.location.reload()
+    }
+
     changeFrameHeight()
     leftNavActivity()
 </script>
