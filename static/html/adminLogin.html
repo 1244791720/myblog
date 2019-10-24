@@ -56,8 +56,9 @@
                         alert("用户名或密码不存在")
                     }
                     if (data.Code === 200) {
-                        let token = data.Data
-                        $.cookie('token', token, {expires:7})
+                        let result = data.Data
+                        $.cookie('token', result.TokenValue, {expires:7})
+                        $.cookie('user_type_id', result.UserTypeId, {expires:7})
                         window.location.href = "admin.html"
                     }
                 }

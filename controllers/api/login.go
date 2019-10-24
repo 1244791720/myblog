@@ -11,13 +11,18 @@ type LoginController struct {
 	beego.Controller
 }
 
+type ResultData struct {
+	TokenValue string
+	UserTypeId int64
+}
+
 func (c *LoginController) Post() {
 	result := c.login()
 	c.SetData(result)
 	c.ServeJSON()
 }
 
-func (c *LoginController) login() *models.Result{
+func (c *LoginController) login() *models.Result {
 	var result models.Result
 	username := c.GetString("username")
 	password := c.GetString("password")
@@ -41,7 +46,7 @@ func (c *LoginController) login() *models.Result{
 		return &models.Result{
 			Code: 403,
 			Data: nil,
-			Msg: "用户名或密码不正确",
+			Msg:  "用户名或密码不正确",
 		}
 	}
 
@@ -53,5 +58,8 @@ func (c *LoginController) login() *models.Result{
 		logs.Error("获取token值" + err.Error())
 		return result.Error()
 	}
-	return result.Success(token.TokenValue)
+	resultData := new(ResultData)
+	resultData.TokenValue = token.TokenValue
+	resultData.UserTypeId = user.UserTypeId
+	return result.Success(resultData)
 }

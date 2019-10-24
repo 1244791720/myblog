@@ -5,6 +5,7 @@ import (
 	"github.com/astaxie/beego/context"
 	"myblog/controllers/api"
 	"myblog/dao"
+	"strconv"
 )
 
 func init() {
@@ -17,8 +18,14 @@ func init() {
 	// 过滤器实现token 认证
 	var FilterToken = func(ctx *context.Context) {
 		token := ctx.Input.Cookie("token")
+		userTypeId := ctx.Input.Cookie("user_type_id")
+		intId, err := strconv.Atoi(userTypeId)
+		if err != nil {
+			ctx.Redirect(302, "/adminLogin.html")
+		}
 		isRight := dao.IsRightToken(token)
-		if !isRight {
+		// 用户存在且身份为管理员，除此之外登录不进
+		if !(isRight && intId == 2) {
 			ctx.Redirect(302, "/adminLogin.html")
 		}
 	}
