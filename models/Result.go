@@ -1,6 +1,6 @@
 package models
 
-import "goblog/myblog/commonconst"
+import "myblog/commonconst"
 
 type Result struct {
 	Code int

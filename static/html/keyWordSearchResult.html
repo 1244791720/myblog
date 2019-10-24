@@ -30,7 +30,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">黄祖珏の博客</a>
+                    <a class="navbar-brand" href="#">咸鱼之家</a>
                 </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
@@ -126,10 +126,24 @@
                     let keyWord = $("#searchInput").val()
                     sessionStorage.setItem('keyWord', keyWord)
                     window.location.href = "keyWordSearchResult.html"
-                }
+                },
+                initArticleTypes: (app) => {
+                    $.ajax({
+                        url: articleTypesApi,
+                        type: "get",
+                        success: function (data, status) {
+                            if (status === "success") {
+                                if (data.Code === 200) {
+                                    app.articleTypes = data.Data
+                                }
+                            }
+                        }
+                    })
+                },
             },
             created: function () {
                 this.initArticle()
+                this.initArticleTypes(this)
             }
         })
     </script>

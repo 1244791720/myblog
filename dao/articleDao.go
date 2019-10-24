@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
-	"goblog/myblog/dao"
 	"myblog/models"
 	"strconv"
 )
@@ -73,7 +72,7 @@ func SearchByKeyWord(keyWord string) (*[]models.ArticleVO, error) {
 	for _, article := range *articles {
 		var articleVo models.ArticleVO
 		articleVo.Id = article.Id
-		articleType, err := dao.GetArticleTypeById(article.TypeId)
+		articleType, err := GetArticleTypeById(article.TypeId)
 		if err != nil {
 			logs.Error(err.Error())
 			return nil, err

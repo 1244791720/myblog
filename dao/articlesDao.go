@@ -2,7 +2,7 @@ package dao
 
 import (
 	"github.com/astaxie/beego/orm"
-	"goblog/myblog/models"
+	"myblog/models"
 )
 
 func GetAllArticles() ([]models.Article, error) {
@@ -33,7 +33,7 @@ func GetArticlesByPage(limit, offset int) ([]models.Article, error) {
 func GetArticleCount() (int64, error) {
 	o := orm.NewOrm()
 	o.Using("default")
-	cnt, err := o.QueryTable("article").Count()
+	cnt, err := o.QueryTable("article").Filter("is_del", 0).Count()
 	if err != nil {
 		return 0, err
 	}

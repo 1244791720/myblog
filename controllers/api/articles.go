@@ -3,8 +3,8 @@ package api
 import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
-	"goblog/myblog/dao"
-	"goblog/myblog/models"
+	"myblog/dao"
+	"myblog/models"
 	"strconv"
 )
 
