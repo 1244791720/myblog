@@ -65,5 +65,7 @@ func init() {
 	beego.Router("/searchByKeyWord", &api.SearchByKeyWordController{})
 	// 用户注册
 	beego.Router("/userSubmit", &api.UserSubmitController{})
+	// 按照类型获取所有文章
+	beego.Router("/getAllArticleByType", &api.GetAllArticlesByTypeController{})
 
 }
